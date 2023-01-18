@@ -15,7 +15,7 @@ const destroyBookmark = async (req, res, next) => {
 
 const updateBookmark = async (req, res, next) => {
     try {
-        const updatedBookmark = await Bookmark.findByIdAndUpdate(req.params.id, req, body, { new: true })
+        const updatedBookmark = await Bookmark.findByIdAndUpdate(req.params.id, req.body, { new: true })
         res.locals.data.bookmark = updatedBookmark
         next()
     } catch (error) {

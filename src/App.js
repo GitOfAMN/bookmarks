@@ -72,10 +72,59 @@ export default function App() {
         }
     }
 
+    //List By User
+    const listBookmarksByUser = async () => {
+        try {
+            const response = await fetch('/api/users/bookmarks')
+            const data = await response.json()
+            setBookmarks(data)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     //Delete Bookmark
-
+    const deletedBookmarks = async (id) => {
+        try {
+            const response = await fetch(`/api/bookmarks/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content=Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            const data = await response.json()
+            const bookmarksCopy = [...bookmarks]
+            const index = bookmarksCopy.findIndex(bookmark => id === bookmark.id)
+            bookmarksCopy.splice(index, 1)
+            setBookmarks(bookmarksCopy)
+        } catch (error) {
+            console.error(error)
+        }
+    }
     //Update Bookmark
+    const updateBookmark = async (id, updatedData) => {
+        try {
+            const response = await fetch(`/api/bookmarks/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            const data = await response.json()
+            const bookmarksCopy = [...bookmarks]
+            const index = bookmarksCopy.findIndex(bookmark => id === bookmark.id)
+            bookmarksCopy[index] = { ...bookmarksCopy[index], ...updatedData }
+            setBookmarks(bookmarksCopy)
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
+    useEffect(() => {
+        listBookmarksByUser()
+    }, [])
 
     return (
         <>
