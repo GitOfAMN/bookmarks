@@ -1,7 +1,17 @@
 import { useState, useEffect } from "react"
+import Auth from "./components/Auth/Auth"
 
 export default function App() {
-    //Login
+
+    const handleEventChange = (event) => {
+        setCredentials({ ...credentials, [event.target.name]: event.target.value })
+    }
+    const handleChange = (event) => {
+        setBookmark({ ...bookmark, [event.target.name]: event.target.value })
+    }
+
+
+    //LOGIN
     const [credentials, setCredentails] = useState({
         email: '',
         password: '',
@@ -31,7 +41,8 @@ export default function App() {
         }
     }
 
-    //Sign Up
+
+    //SIGN UP
     const signUp = async () => {
         try {
             const response = await fetch('/api/users', {
@@ -49,7 +60,8 @@ export default function App() {
         }
     }
 
-    //Create Bookmark
+
+    //CREATE BOOKMARK
     const createBookmark = async () => {
         try {
             const response = await fetch('/api/bookmarks', {
@@ -60,22 +72,29 @@ export default function App() {
                 },
                 body: JSON.stringify({ ...bookmark })
             })
-            const data = await response.json
+            const data = await response.json()
             setBookmarks([data, ...bookmarks])
+        } catch (error) {
+            console.error(error)
+        } finally {
             setBookmark({
                 title: '',
                 url: ''
             })
-
-        } catch (error) {
-            console.error(error)
         }
     }
 
-    //List By User
+
+    //LIST BY USER
     const listBookmarksByUser = async () => {
         try {
-            const response = await fetch('/api/users/bookmarks')
+            const response = await fetch('/api/users/bookmarks', {
+                method: 'GET',
+                headers: {
+                    'Content=Type': 'application/json',
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('token'))}`
+                }
+            })
             const data = await response.json()
             setBookmarks(data)
         } catch (error) {
@@ -83,7 +102,8 @@ export default function App() {
         }
     }
 
-    //Delete Bookmark
+
+    //DELETE BOOKMARK
     const deletedBookmarks = async (id) => {
         try {
             const response = await fetch(`/api/bookmarks/${id}`, {
@@ -102,7 +122,9 @@ export default function App() {
             console.error(error)
         }
     }
-    //Update Bookmark
+
+
+    //UPDATE BOOKMARK
     const updateBookmark = async (id, updatedData) => {
         try {
             const response = await fetch(`/api/bookmarks/${id}`, {
@@ -122,13 +144,54 @@ export default function App() {
         }
     }
 
+
+    //this will call the list bookmarks by user right when the page first loads - notice the empty array!
     useEffect(() => {
-        listBookmarksByUser()
+        const tokenData = localStorage.getItem('token')
+        if (tokenData && tokenData !== 'null' && tokenData !== 'undefined') {
+            listBookmarksByUser()
+        }
     }, [])
+
+
+
+    useEffect(() => {
+        const tokenData = localStorage.getItem('token')
+        if (tokenData && tokenData !== 'null' && tokenData !== 'undefined') {
+            setToken(JSON.parse(tokenData))
+        }
+    })
+
+
+
 
     return (
         <>
-            <h1>Hello World!</h1>
+        <Auth
+        login={login}
+        credentials={credentials}
+        handleChangeAuth={handleChangeAuth}
+        signUp={signUp}
+        />
+            <h2>Create A Bookmark</h2>
+            <form onSubmit={() => {
+                e.preventDefault()
+                createBookmark()
+            }}>
+                <input type="text" value={bookmark.title} name="title" onChange={handleChange} placeholder={'Title'}></input>
+                <input type="text" value={bookmark.url} name="url" onChange={handleChange} placeholder={'URL'}></input>
+                <input type="submit" value="Create Bookmark" />
+            </form>
+
+            <ul>
+                {bookmarks.length ? bookmarks.map(item => (
+                    <li key={item._id}>
+                        <h4>{item.title}</h4>
+                        <a href={item.url} target="_blank"> {item.url}</a>
+                    </li>
+                )) : <>No Bookmarks Added</>
+                }
+            </ul>
         </>
     )
 }
