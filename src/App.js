@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react"
 import Auth from "./components/Auth/Auth"
+import CreateBookmark from "./components/CreateBookmark/CreateBookmark"
+import BookmarkList from "./components/BookmarkList/BookmarkList"
 
 export default function App() {
 
@@ -115,7 +117,7 @@ export default function App() {
             })
             const data = await response.json()
             const bookmarksCopy = [...bookmarks]
-            const index = bookmarksCopy.findIndex(bookmark => id === bookmark.id)
+            const index = bookmarksCopy.findIndex(bookmark => id === bookmark._id)
             bookmarksCopy.splice(index, 1)
             setBookmarks(bookmarksCopy)
         } catch (error) {
@@ -136,7 +138,7 @@ export default function App() {
             })
             const data = await response.json()
             const bookmarksCopy = [...bookmarks]
-            const index = bookmarksCopy.findIndex(bookmark => id === bookmark.id)
+            const index = bookmarksCopy.findIndex(bookmark => id === bookmark._id)
             bookmarksCopy[index] = { ...bookmarksCopy[index], ...updatedData }
             setBookmarks(bookmarksCopy)
         } catch (error) {
@@ -166,32 +168,27 @@ export default function App() {
 
 
     return (
-        <>
-        <Auth
-        login={login}
-        credentials={credentials}
-        handleChangeAuth={handleChangeAuth}
-        signUp={signUp}
-        />
-            <h2>Create A Bookmark</h2>
-            <form onSubmit={() => {
-                e.preventDefault()
-                createBookmark()
-            }}>
-                <input type="text" value={bookmark.title} name="title" onChange={handleChange} placeholder={'Title'}></input>
-                <input type="text" value={bookmark.url} name="url" onChange={handleChange} placeholder={'URL'}></input>
-                <input type="submit" value="Create Bookmark" />
-            </form>
 
-            <ul>
-                {bookmarks.length ? bookmarks.map(item => (
-                    <li key={item._id}>
-                        <h4>{item.title}</h4>
-                        <a href={item.url} target="_blank"> {item.url}</a>
-                    </li>
-                )) : <>No Bookmarks Added</>
-                }
-            </ul>
+        <>
+
+            <Auth
+                login={login}
+                credentials={credentials}
+                handleChangeAuth={handleChangeAuth}
+                signUp={signUp}
+            />
+
+            <CreateBookmark
+                createBookmark={createBookmark}
+                bookmark={bookmark}
+                handleChange={handleChange}
+            />
+
+            <BookmarkList
+                bookmarks={bookmarks}
+                updateBookmark={updateBookmark}
+                deleteBookmark={deleteBookmark}
+            />
         </>
     )
 }

@@ -1,0 +1,34 @@
+import { useRef, useState } from 'react'
+
+export default function Bookmark({
+    bookmark,
+    updateBookmark,
+    deleteBookmark
+}) {
+    const [showInput, setShowInput] = useState(false)
+    const useRef = useRef(null)
+    return (
+        <>
+            <li>
+                <h4 onClick={() => setShowInput(!showInput)}>{bookmark.title}</h4>
+                <input 
+                ref={inputRef}
+                style={{ display: showInput ? 'block' : 'none' }}
+                type="text"
+                onKeyDown={(e) => {
+                    if(e.key === 'Enter'){
+                        const title = inputRef.current.view
+                        updateBookmarks(bookmark._id, { title })
+                        setShowInput(false)
+                    }
+                }}
+                defaultValue={bookmark.title}
+                />
+                <a href={bookmark.url} target="_blank"> {bookmark.url}</a>
+                <button onClick={() => deleteBookmark(bookmark._id)}>
+                Delete Me
+                </button>
+            </li>
+        </>
+    )
+}
