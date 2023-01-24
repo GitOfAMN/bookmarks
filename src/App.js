@@ -153,7 +153,7 @@ export default function App() {
         if (tokenData && tokenData !== 'null' && tokenData !== 'undefined') {
             listBookmarksByUser()
         }
-    }, [])
+    }, [token])
 
 
 
@@ -162,7 +162,7 @@ export default function App() {
         if (tokenData && tokenData !== 'null' && tokenData !== 'undefined') {
             setToken(JSON.parse(tokenData))
         }
-    })
+    }, [])
 
 
 
@@ -176,6 +176,8 @@ export default function App() {
                 credentials={credentials}
                 handleChangeAuth={handleChangeAuth}
                 signUp={signUp}
+                setToken={setToken}
+                token={token}
             />
 
             <CreateBookmark

@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react'
 import Login from "../Login/Login"
 import SignUp from "../SignUp/SignUp"
+import styles from "./Auth.module.scss"
 
 export default function Auth({
     login,
     signUp,
     credentials,
-    handleChangeAuth
+    handleChangeAuth,
+    token,
+    setToken
 }) {
     const [showSignUp, setShowSignUp] = useState(true)
     const [user, setUser] = useState(null)
@@ -23,18 +26,19 @@ export default function Auth({
             }
             return JSON.parse(token)
         }
-        const token = getToken()
-        const data = token ? JSON.parse(window.atob(token.split('.')[1]).user) : null
+        const myToken = getToken()
+        const data = myToken ? JSON.parse(window.atob(myToken.split('.')[1]).user) : null
         setUser(data)
+        setToken(myToken)
     }, [])
     return (
         <>
             {
                 //this is if we have a user, we give them the welcome message, otherwise we show them the form starting at button with toggles between sign up or log in
                 user && user.name ?
-                    <h1>Welcome {user.name.toUpperCase()}</h1> :
-                    <>
-                        <button
+                    <h1 className={styles.h1}>Welcome {user.name.toUpperCase()}</h1> 
+                    : <>
+                        <button className={styles.button}
                             onClick={() => {
                                 setShowSignUp(!showSignUp)
                             }}
