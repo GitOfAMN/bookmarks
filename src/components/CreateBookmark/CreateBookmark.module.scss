@@ -4,6 +4,7 @@
     grid-template-columns: 1fr 2fr;
     gap: 1.25vmin;
     color: var(--text-light);
+    min-height: 8rem;
 
     label {
         font-size: 2vmin;
@@ -28,6 +29,7 @@
         color: var(--offwhite);
         background-color: var(--text-dark);
         border-radius: .5vmin;
+        min-height: 4rem;
     }
 }
 
